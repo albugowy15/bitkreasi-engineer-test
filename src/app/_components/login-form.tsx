@@ -9,6 +9,7 @@ import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/button";
 import { Label } from "@/components/label";
+import { getAPIUrl } from "@/lib/utils";
 export interface Input {
   email: string;
   password: string;
@@ -20,7 +21,7 @@ export default function LoginForm() {
   });
 
   const onSubmit: SubmitHandler<Input> = (data) => {
-    fetch("http://localhost:3000/api/login", {
+    fetch(`${getAPIUrl()}/api/login`, {
       method: "POST",
       body: JSON.stringify(data),
     })
