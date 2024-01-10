@@ -16,6 +16,7 @@ export interface Input {
 }
 
 export default function LoginForm() {
+  const [successBadge, setSuccessBadge] = useState(false);
   const form = useForm<Input>({
     mode: "onChange",
   });
@@ -29,15 +30,29 @@ export default function LoginForm() {
         if (!res.ok) {
           const data = (await res.json()) as LoginResponse;
           form.setError(data.field ?? "root", { message: data.message });
+          setSuccessBadge(false);
+        } else {
+          setSuccessBadge(true);
         }
       })
-      .catch((err) => console.log("err: ", err));
+      .catch((err) => {
+        setSuccessBadge(false);
+        console.log("err: ", err);
+      });
   };
 
   const [togglePassword, setTogglePassword] = useState(false);
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="px-2 font-inter">
+    <form
+      onSubmit={form.handleSubmit(onSubmit)}
+      className="w-full px-4 font-inter lg:w-[600px]"
+    >
+      {successBadge && (
+        <div className="mb-4 rounded border border-green-500 p-4 text-white">
+          <p className="font-bold text-green-500">Login berhasil</p>
+        </div>
+      )}
       <h1 className="text-xl font-medium sm:text-3xl">
         Selamat Datang di Asadesa 👋
       </h1>
@@ -107,9 +122,10 @@ export default function LoginForm() {
           )}
         </div>
       </div>
+
       <Link
         href="/forget-password"
-        className="mt-2 text-right font-medium text-primary underline underline-offset-4"
+        className="mt-2 flex justify-end font-medium text-primary underline underline-offset-4"
       >
         Lupa kata sandi?
       </Link>
